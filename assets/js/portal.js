@@ -32,15 +32,21 @@ mtask.blocks.loader = function()
 {
     var loader = this;
 
-    var $contentWrap = $('.js-update-portal-info');
-    var $addContent = $('<pre>');
-    var $notification,
-        content;
-    var arMethods = [
-        {'methodName': 'getGroups', 'methodTitle': 'групп'},
-        {'methodName': 'getTasks', 'methodTitle': 'задач'}
-    ];
-    var k = 0;
+    var $notification;
+    loader.arUsers = [];
+    loader.timesLoadedCnt = 0;
+    loader.timesInsertedCnt = 0;
+    loader.timesUpdatedCnt = 0;
+    loader.delay = 0;
+    loader.task = 0;
+    loader.tasksCnt = 0;
+    loader.loadingTask = 0;
+
+    loader.tasksLoadedCnt = 0;
+    loader.tasksInsertedCnt = 0;
+    loader.tasksUpdatedCnt = 0;
+    loader.arDurationTasks = {};
+    loader.tasksPage = 1;
 
     this.updateInfo = function(action, arParams) {
         if( action == undefined ){
@@ -49,7 +55,6 @@ mtask.blocks.loader = function()
         if( arParams == undefined ){
             arParams = {};
         }
-        console.log(action);
 
         $.ajax({
             url : window.location.href,
@@ -57,20 +62,110 @@ mtask.blocks.loader = function()
             dataType: 'json',
             method: 'post',
             success: function(response) {
-                content = 'Загружено ' + arMethods[k].methodTitle + ' с портала: ' + (( response.hasOwnProperty('ITEMS') && Object.keys(response.ITEMS).length ) ? Object.keys(response.ITEMS).length : 0);
-                content += '<br>Добавлено записей в БД: ' + (( response.hasOwnProperty('INSERTED') && Object.keys(response.INSERTED).length ) ? Object.keys(response.INSERTED).length : 0);
-                content += '<br>Обновлено записей в БД: ' + (( response.hasOwnProperty('UPDATED') && Object.keys(response.UPDATED).length ) ? Object.keys(response.UPDATED).length : 0);
-                $notification = $addContent.clone().html(content).appendTo($contentWrap);
-                k++;
+                switch(action) {
 
-                if( k < arMethods.length ){
-                    loader.updateInfo(arMethods[k].methodName, {'ITEMS': response.ITEMS});
-                    $addContent.clone().html('Идет загрузка ' + arMethods[k].methodTitle).appendTo($contentWrap);
+                    /*Callback для получения групп*/
+                    case 'getGroups':
+                        action = 'getTasks';
+                        loader.addNotification(response, 'групп', 'задач');
+                        loader.updateInfo(action, {});
+                        break;
+
+                    /*Callback для получения задач*/
+                    case 'getTasks':
+                        if( response.hasOwnProperty('TOTAL')
+                            && response.hasOwnProperty('ITEMS')
+                            && Object.keys(response.ITEMS).length
+                            && (loader.tasksLoadedCnt + Object.keys(response.ITEMS).length) < response.TOTAL ){
+                            loader.addNotification(response, 'задач');
+
+                            if( response.hasOwnProperty('TASKS_WITH_DURATIONS') && Object.keys(response.TASKS_WITH_DURATIONS).length ){
+                                loader.tasksCnt = Object.keys(response['TASKS_WITH_DURATIONS']).length;
+                                $.extend(loader.arDurationTasks, loader.arDurationTasks, response.TASKS_WITH_DURATIONS)
+                            }
+
+                            loader.tasksPage++;
+                            loader.updateInfo(action, {'PAGE': loader.tasksPage});
+                        }
+                        else{
+                            loader.addNotification(response, 'задач', 'списаний времени');
+                            action = 'getTime';
+
+                            $.each(loader.arDurationTasks, function (index, arTask) {
+                                setTimeout(function(){
+                                    loader.task++;
+                                    loader.loadingTask = index;
+                                    loader.updateInfo(action, {'TASK': arTask})
+                                }, loader.delay += 100);
+                            });
+                        }
+
+                        break;
+
+                    /*Callback для получения времени*/
+                    case 'getTime':
+                        loader.addNotification(response, 'списаний времени')
+                        if( response.hasOwnProperty('USERS') && Object.keys(response.USERS).length ){
+                            $.each(response.USERS, function(index, val){
+                                if( $.inArray(index, loader.arUsers) == -1 ){
+                                    loader.arUsers.push(index);
+                                }
+                            });
+                        }
+                        if( loader.task == loader.tasksCnt && response['TASK'] == loader.loadingTask ){
+                            action = 'getUsers';
+                            loader.addNotification(response, '', 'пользователей');
+                            loader.updateInfo(action, {'USERS': loader.arUsers});
+                        }
+                        break;
+
+                    /*Callback для получения пользователей*/
+                    case 'getUsers':
+                        loader.addNotification(response, 'пользователей');
+                        break;
                 }
-
             }
         });
     };
+
+    this.addNotification = function(arLoaded, currentEntity, nextEntity)
+    {
+        var $contentWrap = $('.js-update-portal-info');
+        var $addContent = $('<pre>');
+        var content,
+            loadedCnt,
+            insertedCnt,
+            updatedCnt;
+
+        if( currentEntity != undefined && currentEntity != '' ){
+            loadedCnt = (( arLoaded.hasOwnProperty('ITEMS') && Object.keys(arLoaded.ITEMS).length ) ? Object.keys(arLoaded.ITEMS).length : 0);
+            insertedCnt = (( arLoaded.hasOwnProperty('INSERTED') && Object.keys(arLoaded.INSERTED).length ) ? Object.keys(arLoaded.INSERTED).length : 0);
+            updatedCnt = (( arLoaded.hasOwnProperty('UPDATED') && Object.keys(arLoaded.UPDATED).length ) ? Object.keys(arLoaded.UPDATED).length : 0);
+
+            if( currentEntity == 'списаний времени' ){
+                loader.timesLoadedCnt = loadedCnt = loader.timesLoadedCnt + loadedCnt;
+                loader.timesInsertedCnt = insertedCnt = loader.timesInsertedCnt + insertedCnt;
+                loader.timesUpdatedCnt = updatedCnt = loader.timesUpdatedCnt + updatedCnt;
+            }
+
+            content = 'Загружено ' + currentEntity + ' с портала: ' + loadedCnt;
+
+            if( currentEntity == 'задач' ){
+                loader.tasksLoadedCnt = loadedCnt = loader.tasksLoadedCnt + loadedCnt;
+                loader.tasksInsertedCnt = insertedCnt = loader.tasksInsertedCnt + insertedCnt;
+                loader.tasksUpdatedCnt = updatedCnt = loader.tasksUpdatedCnt + updatedCnt;
+            }
+            content += '<br>Добавлено записей в БД: ' + insertedCnt;
+            content += '<br>Обновлено записей в БД: ' + updatedCnt;
+
+            $addContent.clone().html(content).appendTo($contentWrap);
+        }
+
+        if( nextEntity != undefined && nextEntity != '' ){
+            $addContent.clone().html('Идет загрузка ' + nextEntity).appendTo($contentWrap);
+        }
+    }
+
 
     this.updateInfo();
 }

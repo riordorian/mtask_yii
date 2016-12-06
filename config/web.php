@@ -44,7 +44,8 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 'reports' => 'site/reports',
-                'loader' => 'site/loader'
+                'loader' => 'site/loader',
+                'upload' => 'site/uploader',
             ],
         ],
 

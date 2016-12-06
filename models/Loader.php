@@ -36,15 +36,15 @@ class Loader extends Object
         }
 
         $arGroups = $this->obIntegration->call('sonet_group.get',
-            array(
+            [
                 'auth' => $this->obIntegration->arSettings['access_token'],
-            )
+            ]
         );
 
         /*
          * Записываем в базу полученныую информацию по группам
          * */
-        $arGroups = $this->save($this->groupsTable, array('ID', 'SITE_ID', 'NAME', 'ACTIVE'), $arGroups);
+        $arGroups = $this->save($this->groupsTable, ['ID', 'SITE_ID', 'NAME', 'ACTIVE'], $arGroups);
 
         return $arGroups;
     }
@@ -53,10 +53,12 @@ class Loader extends Object
     /**
      * Получет задачи по группам
      *
+     * @param int $pageNum - номер страницы
+     *
      * @return array|mixed
      * @throws \Exception
      */
-    public function getTasks()
+    public function getTasks($pageNum = 1)
     {
         if( empty($this->obIntegration->arSettings['access_token']) ){
             throw new \Exception('Incorrect access token');
@@ -67,19 +69,27 @@ class Loader extends Object
          * */
         //	TODO: Не работает ограничение выборки. Нужно разобраться
         $arTasks = $this->obIntegration->call('task.item.list',
-            array(
-                'ORDER' => array('TITLE' => 'asc'),
-                'FILTER' => array(0 => ''),
-                'PARAMS' => array(0 => ''),
-                'SELECT' => array('ID', 'TITLE', 'GROUP_ID', 'RESPONSIBLE_ID', 'DURATION_FACT'),
+            [
+                'ORDER' => ['TITLE' => 'asc'],
+                'FILTER' => [0 => ''],
+                'PARAMS' => [
+                    'NAV_PARAMS' => [
+                        "nPageSize" => 50,
+                        'iNumPage' => $pageNum
+                    ]
+                ],
+                'SELECT' => ['ID', 'TITLE', 'GROUP_ID', 'RESPONSIBLE_ID', 'DURATION_FACT'],
                 'auth' => $this->obIntegration->arSettings['access_token']
-            )
+            ]
         );
+
+        $totalTasks = $arTasks['total'];
 
         /*
          * Записываем в базу полученныую информацию по группам
          * */
-        $arTasks = $this->save($this->tasksTable, array('ID', 'TITLE', 'GROUP_ID', 'RESPONSIBLE_ID', 'DURATION_FACT'), $arTasks);
+        $arTasks = $this->save($this->tasksTable, ['ID', 'TITLE', 'GROUP_ID', 'RESPONSIBLE_ID', 'DURATION_FACT'], $arTasks);
+        $arTasks['TOTAL'] = $totalTasks;
 
         return $arTasks;
     }
@@ -99,23 +109,23 @@ class Loader extends Object
             throw new \Exception('Incorrect access token');
         }
         if( empty($taskId) ){
-            throw new \Exception('Empty tasks ids array');
+            throw new \Exception('Empty task id');
         }
 
         /*
          * Собираем информацию о списанном времени
          * */
         $arTimes = $this->obIntegration->call('task.elapseditem.getlist',
-            array(
+            [
                 'auth' => $this->obIntegration->arSettings['access_token'],
                 'TASK_ID' => $taskId
-            )
+            ]
         );
 
         /*
          * Записываем в базу полученныую информацию по группам
          * */
-        $arTimes = $this->save($this->timeTable, array('ID', 'TASK_ID', 'SECONDS', 'USER_ID', 'CREATED_DATE'), $arTimes);
+        $arTimes = $this->save($this->timeTable, ['ID', 'TASK_ID', 'SECONDS', 'USER_ID', 'CREATED_DATE'], $arTimes);
 
         return $arTimes;
     }
@@ -139,16 +149,16 @@ class Loader extends Object
          * Собираем информацию о пользователях
          * */
         $arUsers = $this->obIntegration->call('user.get.json',
-            array(
+            [
                 'auth' => $this->obIntegration->arSettings['access_token'],
 			    'ID' => $arUserIds
-            )
+            ]
         );
 
         /*
          * Записываем в базу полученныую информацию по группам
          * */
-        $arUsers = $this->save($this->usersTable, array('ID', 'EMAIL', 'NAME', 'LAST_NAME', 'SECOND_NAME'), $arUsers);
+        $arUsers = $this->save($this->usersTable, ['ID', 'EMAIL', 'NAME', 'LAST_NAME', 'SECOND_NAME'], $arUsers);
 
         return $arUsers;
     }
@@ -190,7 +200,7 @@ class Loader extends Object
                 if( array_key_exists($arRow['ID'], $arExElems) ){
                     $elId = $arElement['ID'];
                     unset($arRow['ID']);
-                    if( $command->update($entity, $arRow, 'ID=:id', array(':id' => $elId))->execute() ){
+                    if( $command->update($entity, $arRow, 'ID=:id', [':id' => $elId])->execute() ){
                         $arResult['UPDATED'][$arElement['ID']] = true;
                     }
                 }
@@ -202,7 +212,7 @@ class Loader extends Object
                 ?><pre><?print_r($e->getMessage())?></pre><?
             }
 
-            $arResult['ITEMS'][$arElement['ID']] = array();
+            $arResult['ITEMS'][$arElement['ID']] = $arElement;
         }
 
         return $arResult;

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Uploader;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -157,28 +158,58 @@ class SiteController extends Controller
         }
 
         if( $arPost['ACTION'] == 'getTasks' ){
-            $arTasks = $model->getTasks();
+            $arTasks = $model->getTasks($arPost['PARAMS']['PAGE']);
+            foreach($arTasks['ITEMS'] as $arTask){
+                if( empty($arTask['DURATION_FACT']) ){
+                    continue;
+                }
+
+                $arTasks['TASKS_WITH_DURATIONS'][$arTask['ID']] = $arTask;
+            }
 
             return json_encode($arTasks);
         }
+        
 
-        /*
-        $arUIds = [];
-        foreach($arTasks['ITEMS'] as $arTask){
-            if( !empty($arTask['DURATION_FACT']) ){
-                $arTaskTime = $model->getTime($arTask['ID']);
+        if( $arPost['ACTION'] == 'getTime' && !empty($arPost['PARAMS']['TASK']) ){
+            $arUIds = [];
+            if( !empty($arPost['PARAMS']['TASK']['DURATION_FACT']) ){
+                $arTaskTime = $model->getTime($arPost['PARAMS']['TASK']['ID']);
                 foreach($arTaskTime['ITEMS'] as $arTime){
                     $arUIds[$arTime['USER_ID']] = array();
                 }
             }
+
+            $arTaskTime['USERS'] = $arUIds;
+            $arTaskTime['TASK'] = $arPost['PARAMS']['TASK']['ID'];
+
+            return json_encode($arTaskTime);
         }
 
-        if( !empty($arUIds) ) {
-            $arUsers = $model->getUsers(array_keys($arUIds));
-        }*/
+        if( !empty($arPost['PARAMS']['USERS']) ) {
+            $arUsers = $model->getUsers($arPost['PARAMS']['USERS']);
+
+            return json_encode($arUsers);
+        }
 
         if( empty($arPost['ACTION']) ){
             return $this->render('loader');
         }
+    }
+
+
+    public function actionUploader()
+    {
+        $model = new Uploader();
+        /*$arPost = Yii::$app->request->post();
+
+        $arGroups = $model->addGroups();
+
+        $arTasks = $model->addTasks();*/
+
+        $arTimes = $model->addTime();
+        return $this->render('uploader', [
+
+        ]);
     }
 }
