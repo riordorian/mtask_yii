@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Integration;
 use app\models\Uploader;
 use Yii;
 use yii\filters\AccessControl;
@@ -64,6 +65,21 @@ class SiteController extends Controller
     public function actionIndex()
     {
         return $this->render('index');
+    }
+
+    /**
+     * Displays homepage.
+     *
+     * @return string
+     */
+    public function actionGetCode()
+    {
+        $model = new Integration();
+        $arResult['client_id'] = $model->arSettings['client_id'];
+
+        return $this->render('get-code', [
+            'arResult' => $arResult,
+        ]);
     }
 
     /**

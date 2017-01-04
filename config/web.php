@@ -46,6 +46,7 @@ $config = [
                 'reports' => 'site/reports',
                 'loader' => 'site/loader',
                 'upload' => 'site/uploader',
+                'get-code' => 'site/get-code',
             ],
         ],
 

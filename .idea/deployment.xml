@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="vipiki">
+    <serverData>
+      <paths name="vipiki">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/mtask.p-w-d.ru" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
