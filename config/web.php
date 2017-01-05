@@ -53,11 +53,11 @@ $config = [
         'assetManager' => [
             'bundles' => [
                 'yii\bootstrap\BootstrapAsset' => [
-//                    'css' => [],
+                    'css' => ['/assets/mtask/css/bootstrap.css'],
 
                 ],
                 'yii\bootstrap\BootstrapPluginAsset' => [
-//                    'js'=>[]
+                    'js'=>['/assets/mtask/js/bootstrap.js']
                 ],
             ],
         ],

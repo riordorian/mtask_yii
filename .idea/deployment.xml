@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="vipiki">
+  <component name="PublishConfigData" serverName="vipiki" uploadOnCheckin="860e5d73-9333-4606-acde-f498012b6fef">
     <serverData>
       <paths name="vipiki">
         <serverdata>
@@ -10,5 +10,6 @@
         </serverdata>
       </paths>
     </serverData>
+    <option name="myUploadOnCheckinName" value="vipiki" />
   </component>
 </project>

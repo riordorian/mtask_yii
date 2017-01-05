@@ -200,7 +200,7 @@ mtask.widgets = new function()
                 {},
                 defaults,
                 element.data('config') || {}
-            )
+            );
 
             element.DataTable(arConfig);
         });
@@ -214,7 +214,10 @@ mtask.widgets = new function()
             "infoEmpty": "По вашему запросу записи не найдены.",
             "infoFiltered": "(Отфильтровано из _MAX_ записей.)"
         },
-        "pagingType": "numbers"
+        "pagingType": "numbers",
+        "initComplete": function(){
+            alert();
+        }
     };
 
 

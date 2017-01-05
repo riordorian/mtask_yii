@@ -18,12 +18,19 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        '//cdn.datatables.net/1.10.12/css/dataTables.bootstrap4.min.css'
+        '/assets/mtask/css/style.css',
+        '/assets/mtask/css/animate.css',
+        '/assets/mtask/font-awesome/css/font-awesome.css',
+        '/assets/mtask/css/dataTables.css',
     ];
     public $js = [
-        'assets/js/portal.js',
-        '//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js',
-        '//cdn.datatables.net/1.10.12/js/dataTables.bootstrap4.min.js'
+        'assets/mtask/js/plugins/metisMenu/jquery.metisMenu.js',
+        'assets/mtask/js/plugins/slimscroll/jquery.slimscroll.min.js',
+        'assets/mtask/js/plugins/pace/pace.min.js',
+        'assets/mtask/js/inspinia.js',
+        'assets/mtask/js/portal.js',
+        'assets/mtask/js/dataTables.js',
+        'assets/mtask/js/dataTables_bootstrap.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

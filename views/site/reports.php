@@ -4,12 +4,10 @@
 
 use yii\helpers\Html;
 
-$this->title = 'Reports';
+$this->title = 'Отчеты';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-about">
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <table class="widget datatable table table-striped table-bordered table-hover table-responsive">
         <thead>
         <tr>

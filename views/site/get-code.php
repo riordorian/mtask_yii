@@ -12,21 +12,19 @@ if( !empty($arGet['code']) ){
     Yii::$app->response->redirect('/site/loader');
 }
 else{
-    ?><div class="site-about">
-    <h1><?= Html::encode($this->title) ?></h1><?
-
-
-    ?><ol>
-        <li>Перейдите по ссылке для получения <a target="_blank" href="https://alxtest.bitrix24.ru/oauth/authorize/?client_id=<?=$arResult['client_id']?>&response_type=code">кода</a></li>
-        <li>
-            <p>Затем</p>
-            <form action="">
-                <input type="text" name="code" placeholder="Введите полученный код">
-                <input type="submit">
-            </form>
+    ?><ul class="sortable-list connectList agile-list ui-sortable" id="todo">
+        <li class="success-element">
+            Перейдите по ссылке для получения <a target="_blank" href="https://alxtest.bitrix24.ru/oauth/authorize/?client_id=<?=$arResult['client_id']?>&response_type=code"><strong>кода</strong></a>
         </li>
-    </ol>
-    </div><?
+        <li class="success-element">
+            <p><strong>Затем введите полученный код в поле</strong></p>
+            <div class="form-group">
+				<label>Код</label>
+				<input type="text" name="code" placeholder="Введите полученный код" class="form-control">
+				<input type="submit" class="btn btn-md btn-primary m-t">
+			</div>
+        </li>
+    </ul><?
 }
 
 
