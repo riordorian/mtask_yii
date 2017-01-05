@@ -58,7 +58,7 @@ AppAsset::register($this);
                     </ul>
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Отчеты</span></a>
+                    <a href="/site/reports/"><i class="fa fa-table"></i> <span class="nav-label">Отчеты</span></a>
                 </li>
                 <li>
                     <a href="#"><i class="fa fa-files-o"></i> <span class="nav-label">Портал</span><span class="fa arrow"></span></a>
