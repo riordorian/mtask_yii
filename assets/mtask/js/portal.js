@@ -215,9 +215,6 @@ mtask.widgets = new function()
             "infoFiltered": "(Отфильтровано из _MAX_ записей.)"
         },
         "pagingType": "numbers",
-        "initComplete": function(){
-            alert();
-        }
     };
 
 
