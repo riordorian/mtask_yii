@@ -41,7 +41,7 @@ AppAsset::register($this);
                             <li><a href="contacts.html">Contacts</a></li>
                             <li><a href="mailbox.html">Mailbox</a></li>
                             <li class="divider"></li>
-                            <li><a href="login.html">Logout</a></li>
+                            <li><a href="/logout/">Выход</a></li>
                         </ul>
                     </div>
                     <div class="logo-element">
@@ -87,13 +87,27 @@ AppAsset::register($this);
                         </div>
                     </form>
                 </div>
-                <ul class="nav navbar-top-links navbar-right">
-                    <li>
-                        <a href="login.html">
-                            <i class="fa fa-sign-out"></i> Выход
-                        </a>
-                    </li>
-                </ul>
+                <ul class="nav navbar-top-links navbar-right"><?
+                    if( Yii::$app->user->isGuest ){
+                        ?><li>
+                            <a href="/auth/">
+                               Вход
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/registration/">
+                                Регистрация
+                            </a>
+                        </li><?
+                    }
+                    else{
+                        ?><li>
+                            <a href="/logout/">
+                                <i class="fa fa-sign-out"></i> Выход
+                            </a>
+                        </li><?
+                    }
+                ?></ul>
 
             </nav>
         </div>

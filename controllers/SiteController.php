@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Integration;
+use app\models\RegistrationForm;
 use app\models\Uploader;
 use Yii;
 use yii\filters\AccessControl;
@@ -31,13 +32,7 @@ class SiteController extends Controller
                         'roles' => ['@'],
                     ],
                 ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
+            ]
         ];
     }
 
@@ -87,7 +82,7 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionLogin()
+    public function actionAuth()
     {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
@@ -97,7 +92,7 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }
-        return $this->render('login', [
+        return $this->render('auth', [
             'model' => $model,
         ]);
     }
@@ -115,19 +110,19 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays contact page.
+     * Displays registration page.
      *
      * @return string
      */
-    public function actionContact()
+    public function actionRegistration()
     {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
+        $model = new RegistrationForm();
 
-            return $this->refresh();
+        if ($model->load(Yii::$app->request->post()) && $model->register()) {
+            return $this->goHome();
         }
-        return $this->render('contact', [
+
+        return $this->render('registration', [
             'model' => $model,
         ]);
     }

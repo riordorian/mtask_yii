@@ -10,7 +10,7 @@ var mtask = new function(){
 
 
 /*
-* Блоки портала
+* The portal sections
 * */
 mtask.blocks = new function()
 {
@@ -28,26 +28,45 @@ mtask.blocks = new function()
     }
 }
 
+
+/*
+* The section of downloading info from portal functional
+* */
 mtask.blocks.loader = function()
 {
     var loader = this;
 
     var $notification;
+    // An array of downloaded users
     loader.arUsers = [];
+    // An array of downloaded time
     loader.timesLoadedCnt = 0;
+    // Inserted to DB Time intervals
     loader.timesInsertedCnt = 0;
+    // Updated in DB Time intervals
     loader.timesUpdatedCnt = 0;
+    // Delay between actions
     loader.delay = 0;
+    // The current task number
     loader.task = 0;
+    // The portal Tasks count
     loader.tasksCnt = 0;
+    // Downloading task
     loader.loadingTask = 0;
-
+    // Downloaded tasks count
     loader.tasksLoadedCnt = 0;
+    // Inserted to DB Tasks
     loader.tasksInsertedCnt = 0;
+    // Updated in DB Tasks
     loader.tasksUpdatedCnt = 0;
+    // An array of the Tasks which have a duration
     loader.arDurationTasks = {};
+    // Current page number of downloading tasks
     loader.tasksPage = 1;
 
+    /**
+     * The function which call one of the downloading subfunction
+     */
     this.updateInfo = function(action, arParams) {
         if( action == undefined ){
             action = 'getGroups';
@@ -64,14 +83,14 @@ mtask.blocks.loader = function()
             success: function(response) {
                 switch(action) {
 
-                    /*Callback для получения групп*/
+                    /* Callback for getting groups */
                     case 'getGroups':
                         action = 'getTasks';
                         loader.addNotification(response, 'групп', 'задач');
                         loader.updateInfo(action, {});
                         break;
 
-                    /*Callback для получения задач*/
+                    /* Callback for getting tasks */
                     case 'getTasks':
                         if( response.hasOwnProperty('TOTAL')
                             && response.hasOwnProperty('ITEMS')
@@ -102,7 +121,7 @@ mtask.blocks.loader = function()
 
                         break;
 
-                    /*Callback для получения времени*/
+                    /* Callback for getting time intervals */
                     case 'getTime':
                         loader.addNotification(response, 'списаний времени')
                         if( response.hasOwnProperty('USERS') && Object.keys(response.USERS).length ){
@@ -119,7 +138,7 @@ mtask.blocks.loader = function()
                         }
                         break;
 
-                    /*Callback для получения пользователей*/
+                    /* Callback for getting users */
                     case 'getUsers':
                         loader.addNotification(response, 'пользователей');
                         break;
@@ -128,6 +147,9 @@ mtask.blocks.loader = function()
         });
     };
 
+    /**
+     * The functional of adding notification about any action of downloading from portal
+     */
     this.addNotification = function(arLoaded, currentEntity, nextEntity)
     {
         var $contentWrap = $('.js-update-portal-info');
@@ -183,7 +205,7 @@ mtask.widgets = new function()
     this.items = {};
 
     /*
-     * Виджет сортировки таблиц
+     * The tablesorter widget
      * */
     this.items['datatable'] = function(selector)
     {
@@ -219,7 +241,7 @@ mtask.widgets = new function()
 
 
     /**
-     * Инициализация виджетов
+     * Widgets initialization
      */
     this.init = function($selector)
     {
