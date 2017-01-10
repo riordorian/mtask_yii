@@ -106,7 +106,7 @@ class Users extends ActiveRecord implements IdentityInterface
 
     
     
-    public function register($arFields)
+    public static function register($arFields)
     {
         if( empty($arFields['username']) || empty($arFields['email']) || empty($arFields['password']) ){
             throw new Exception('Incorrect user params');
