@@ -2511,6 +2511,9 @@ label {
   margin-bottom: 5px;
   font-weight: bold;
 }
+label.checkbox-label{
+  line-height: 20px;
+}
 input[type="search"] {
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;

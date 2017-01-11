@@ -104,8 +104,15 @@ class Users extends ActiveRecord implements IdentityInterface
         return Yii::$app->security->validatePassword($password, $this->password);
     }
 
-    
-    
+
+    /**
+     * Add new user to DB
+     *
+     * @param $arFields - array of user fields
+     *
+     * @return bool
+     * @throws Exception
+     */
     public static function register($arFields)
     {
         if( empty($arFields['username']) || empty($arFields['email']) || empty($arFields['password']) ){

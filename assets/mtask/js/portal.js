@@ -240,6 +240,33 @@ mtask.widgets = new function()
     };
 
 
+    this.items['i-check'] = function(selector)
+    {
+        console.log();
+        if (!$.fn.iCheck) {
+            return;
+        }
+
+        var defaults = mtask.widgets.items['i-check'].defaults;
+
+        $(selector).each(function() {
+            var element = $(this);
+
+            var arConfig = $.extend(
+                {},
+                defaults,
+                element.data('config') || {}
+            );
+            element.iCheck(arConfig);
+        });
+    };
+
+    this.items['i-check'].defaults = {
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green'
+    };
+
+
     /**
      * Widgets initialization
      */

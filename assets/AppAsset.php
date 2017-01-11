@@ -19,16 +19,18 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         '/assets/mtask/css/style.css',
+        '/assets/mtask/js/plugins/iCheck/custom.css',
         '/assets/mtask/css/animate.css',
         '/assets/mtask/font-awesome/css/font-awesome.css',
         '/assets/mtask/css/dataTables.css',
     ];
     public $js = [
+        'assets/mtask/js/plugins/iCheck/icheck.min.js',
         'assets/mtask/js/plugins/metisMenu/jquery.metisMenu.js',
         'assets/mtask/js/plugins/slimscroll/jquery.slimscroll.min.js',
         'assets/mtask/js/plugins/pace/pace.min.js',
         'assets/mtask/js/inspinia.js',
-        'assets/mtask/js/portal.js',
+        'assets/mtask/js/portal.js?123',
         'assets/mtask/js/dataTables.js',
         'assets/mtask/js/dataTables_bootstrap.js',
     ];
